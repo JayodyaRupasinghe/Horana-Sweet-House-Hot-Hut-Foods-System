@@ -48,6 +48,9 @@ public class workwindow extends javax.swing.JFrame {
         showdate();
         showtime();
         
+        invoiceNumber();
+        
+        
         
     }
     public void showdate() 
@@ -84,9 +87,58 @@ public class workwindow extends javax.swing.JFrame {
                     txtquantity.setText("");
                     txttprice.setText("");
     }
+   
+    public void invoiceNumber()
+    {
+         try 
+         {
+              String lastValue="0";
+              st = conn.createStatement();
+              String qryInv = "SELECT * FROM invoicenumber";
+              ResultSet resultSet = st.executeQuery(qryInv); 
+              
+             if (resultSet.next()) 
+             {
+                lastValue = resultSet.getString("invoicenumber");
+             } 
+             else 
+             {
+                System.out.println("No records found in the table.");
+             }
+             
+             int newInvoiceNumber= Integer.parseInt(lastValue)+1;
+             
+             if(newInvoiceNumber<10)
+             {
+                 lbldisplayinovno.setText("000"+Integer.toString(newInvoiceNumber));
+             }
+             else if(newInvoiceNumber<100)
+             {
+                 lbldisplayinovno.setText("0"+Integer.toString(newInvoiceNumber));
+             }
+             else
+             {
+                 lbldisplayinovno.setText(Integer.toString(newInvoiceNumber));
+             }
+             
+             String qryInvDelete = "DELETE FROM invoicenumber";
+             st.executeUpdate(qryInvDelete); 
+             
+              String qryInvUpdate = "INSERT INTO invoicenumber(invoicenumber) VALUES ('"+newInvoiceNumber+"')";
+             st.executeUpdate(qryInvUpdate);
+        }
     
+         catch (Exception e) 
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
     
-    /* ---------------------------------------------------------------------------------------------------------*/
+    }
+
+
+        
+    
+
     
     
     public void tablerowclear()
@@ -139,7 +191,7 @@ public class workwindow extends javax.swing.JFrame {
         
     
     }
-    /* -----------------------------------------------------------------------------------------------------------------------------------*/ 
+    
     
     
     
@@ -954,12 +1006,15 @@ public class workwindow extends javax.swing.JFrame {
 
     private void butcheckoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_butcheckoutMouseClicked
         // TODO add your handling code here:
-        int i= Integer.valueOf (lbldisplayinovno.getText());
+        
+        invoiceNumber();
+        
+        /*int i= Integer.valueOf (lbldisplayinovno.getText());
         
         
         ++i;
         
-         lbldisplayinovno.setText(String.valueOf(i));
+         lbldisplayinovno.setText(String.valueOf(i));*/
         
         
             
